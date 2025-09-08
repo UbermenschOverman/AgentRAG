@@ -1,0 +1,42 @@
+@startuml
+!define C4P https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master
+!includeurl C4P/C4_Context.puml
+!includeurl C4P/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+' Người dùng (Actors)
+Person(customer, "Khách hàng", "Người dùng cuối, truy cập chat qua Frontend")
+Person(agent, "Nhân viên", "Nhân viên chăm sóc khách hàng — agent manual")
+Person(admin, "Quản lý", "Người quản lý/doanh nghiệp cấu hình hệ thống")
+
+System_Boundary(s1, "Hệ thống Chatbot SaaS") {
+  
+  Container(Frontend, "Frontend Service", "React/Vue + WebSocket", "Giao diện Web cho khách, agent, admin")
+  Container(KafkaBroker, "Message Broker", "Kafka", "Message bus cho xử lý bất đồng bộ")
+  Container(ContextSvc, "Context Management Service", "Node.js (WebSocket)", "Giữ session, xử lý WebSocket, quản lý ngữ cảnh")
+  Container(ConvSvc, "Conversation Management Service", "Java/Spring Boot", "Phân tích intent, điều phối event")
+  Container(ActionSvc, "Action Management Service", "Java/Spring Boot", "Xử lý tool calls, gọi DB và LLM API")
+  Container(DBSvc, "Database Service", "MongoDB / PostgreSQL / Redis", "CRUD cho session, hội thoại, đơn hàng, cấu hình")
+
+}
+
+' Các kết nối
+Rel(customer, Frontend, "WebSocket / HTTPS", "Tin nhắn chat, hiển thị phản hồi")
+Rel(agent, Frontend, "WebSocket / HTTPS", "Agent nhận/chuyển tiếp tin nhắn")
+Rel(admin, Frontend, "HTTPS", "Giao diện quản lý cấu hình, tài liệu")
+
+Rel(Frontend, ContextSvc, "WebSocket / REST", "Gửi tin nhắn, nhận phản hồi, xác định session")
+Rel(ContextSvc, KafkaBroker, "Producing", "message.received (tin nhắn mới)")
+Rel(KafkaBroker, ConvSvc, "Consuming", "message.received")
+Rel(ConvSvc, KafkaBroker, "Producing", "action.request")
+Rel(KafkaBroker, ActionSvc, "Consuming", "action.request")
+Rel(ActionSvc, KafkaBroker, "Producing", "action.response")
+Rel(KafkaBroker, ConvSvc, "Consuming", "action.response")
+Rel(ConvSvc, ContextSvc, "REST", "Trả phản hồi chat (sau tổng hợp)")
+Rel(ContextSvc, Frontend, "WebSocket", "Đẩy phản hồi đến khách/agent")
+
+Rel(ConvSvc, DBSvc, "REST/DAO", "Lấy/ghi chat logs, session, đơn hàng")
+Rel(ActionSvc, DBSvc, "REST/DAO", "CRUD đơn hàng, truy vấn knowledgebase")
+
+@enduml

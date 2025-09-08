@@ -1,0 +1,60 @@
+@startuml
+|query|
+start
+note left
+câu hỏi gốc
+end note
+:Embedding câu hỏi;
+|retrieval|
+:Tìm kiếm trong cơ sở tri thức
+của doanh nghiệp;
+note right 
+    Tập trả về 1
+end note
+|generation|
+:Thực hiện suy luận
+và tạo phản hồi;
+note right 
+    Phản hồi 1
+end note
+note left
+câu hỏi gốc
+end note
+note left
+Tập trả về 1
+end note
+if (phản hồi có hợp lệ?) then (không)
+    : tạo câu hỏi phụ
+    dựa trên tập trả về 1;
+        note right 
+            Câu hỏi phụ
+        end note
+    |query|
+        :Embedding câu hỏi;
+        note left
+            Câu hỏi phụ
+        end note
+    |retrieval|
+        :Tìm kiếm trong cơ sở tri thức
+        của doanh nghiệp;
+            note right 
+                Tập trả về 2
+            end note
+    |generation|
+        :Thực hiện suy luận
+        và tạo phản hồi
+        dựa trên tập trả về 2;
+            note right 
+                Phản hồi 2
+            end note
+            note left
+            câu hỏi gốc
+            end note
+            note left
+            Tập trả về 2
+            end note
+    else (có)
+endif
+:Trả về phản hồi;
+stop
+@enduml

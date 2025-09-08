@@ -1,0 +1,20 @@
+api đặt phòng
+
+trigger bằng http request
+nhận conversation_ID, tenent_Id, và intent đã trích xuất.
+chechk cache xem với conversationID này có trong đã tồn tại incompleted order queue chưa
+nếu chưa, lấy thoogn tin về các trường cần phải điền của doanh nghiệp này từ db, 
+tạo đơn rỗng,
+gửi form đơn rỗng và intent lên LLM để LLM trả về populated form (follow up question nếu không thể trích xuất hoặc thiếu thông tin, được biểu hiện bằng 1 cờ nào đó)
+Xét cờ để :
+    - nếu đủ thì gửi xác nhận đơn.
+        -đẩy order vào completed queue
+    - nếu không đủ/ thiếu thì forward câu hỏi luôn.
+        - -đẩy populated order vào incompleted order queue
+
+defb3b477cef weaviate
+46ada8c68ebf redis
+
+pipeline đã chạy rồi, giờ phải gắn nó vào websocket
+
+trigger pipeline bằng consume sự kiện LLM_mes và produce LLM_reply

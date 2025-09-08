@@ -1,0 +1,23 @@
+@startuml
+start
+: Gửi yêu cầu phụ trách khách hàng;
+if (Có đang phụ trách khách) then (có)
+    : Báo lỗi;
+    end
+else (không)
+    if (Khách đang được phụ trách) then (có)
+        : báo lỗi;
+    end
+    else (không)
+        : bật cờ isClaimed = true 
+        cho khách hàng;
+        : Lưu thông tin phụ trách;
+        : Cập nhật vào bản ghi hội thoại;
+        : Xử lý tin nhắn của khách 
+        trong hàng đợi (nếu có);
+        : Bỏ khách ra khỏi waiting_pool;
+    endif
+endif
+: Phản hồi phụ trách thành công;
+stop
+@enduml

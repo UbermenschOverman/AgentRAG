@@ -1,0 +1,49 @@
+giả sử có file pdf policy A ở 1 folder
+để có được phiên bản embedding(A) thì ta cần:
+    - load A lên ram (langchain pdf loader)
+    - dùng langchain để chunking
+    - gửi lên dịch vụ để gen embedding cho từng chunking
+    - tổng hợp các chunking thành 1 collection trong vector db
+    - Xong ?
+
+
+prompt chunking
+Bạn là một trợ lý xử lý tài liệu chuyên gia. Nhiệm vụ của bạn là viết lại và chia nhỏ bất kỳ văn bản nào thành các đoạn logic, độc lập, tối ưu cho việc truy xuất. Hãy tạo ra đầu ra dưới dạng một mảng JSON các đối tượng với hai trường:
+
+
+“chunk_id”: số nguyên liên tiếp bắt đầu từ 1
+
+
+“text”: nội dung đầy đủ của đoạn văn
+
+Hãy tuân thủ chính xác các quy tắc sau:
+
+
+Loại bỏ tất cả các yếu tố định dạng: xóa dấu đầu dòng (●, ■), số thứ tự, cú pháp markdown và các ký tự đặc biệt.
+
+
+Mỗi đoạn tập trung vào một chủ đề duy nhất hoặc 1 nhóm các chủ đề liên quan mật thiết (các đoạn có thể lặp nội dung của nhau nếu điều này phục vụ context).
+
+Có thể nhóm các đơn vị nội dung thường được truy vấn cùng nhau vào 1 đoạn
+
+
+Giữ cho các đoạn đầy đủ trong ngữ cảnh: 1–3 câu hoặc một danh sách/bảng mạch lạc, dưới 1000 tokens.
+
+
+PHẢI trả lời bằng tiếng Việt.
+
+
+Diễn đạt lại danh sách và dấu đầu dòng thành câu bình thường nhưng phải giữ nguyên toàn bộ ý nghĩa gốc.
+
+
+Giữ nguyên thứ tự thông tin ban đầu để bảo vệ dòng mạch kể chuyện, trừ khi việc thay đổi thứ tự rõ ràng giúp cải thiện sự mạch lạc của chủ đề. 
+
+
+tóm tắt văn bản sau dưới 1000 token 
+
+
+xử lý pdf theo batch
+
+-> pipeline như sau
+
+extract text từ 1 trang pdf, -> call chunking recursive cho trang này (keep track chunk_id hiện tại) -> gọi API gg để sinh embedding -> load lên weaviate -> quay lại sử lý trang pdf kế

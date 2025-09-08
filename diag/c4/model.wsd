@@ -1,0 +1,48 @@
+' File: CommonContainers.puml
+' Định nghĩa tất cả các Container cho hệ thống Chatbot SaaS
+
+' Import thư viện C4-PlantUML
+!define C4P https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master
+!includeurl C4P/C4_Container.puml
+
+' =====================================
+' Định nghĩa Container Service
+' =====================================
+
+System_Boundary(s1, "Hệ thống Chatbot SaaS") {
+
+package "Giao diện" {
+    Container(Frontend, "Frontend Service", "React + WebSocket", "Giao diện Web/WebSocket riêng biệt cho ba tác nhân: Khách hàng, Nhân viên, Quản lý.")
+
+}
+' Frontend Service
+package "Backend"{
+    ' Message Broker (Kafka)
+Container(KafkaBroker, "Message Broker", "Apache Kafka", "Message bus xử lý event bất đồng bộ giữa các service.")
+
+' Context Management Service
+Container(HT, "Dịch vụ hội thoại", "Node.js + WebSocket + Redis", "Quản lý phiên (session), xác định và cập nhật các dữ liệu tin nhắn, duy trì kết nối WebSocket hai chiều.")
+
+' Conversation Management Service
+Container(PH, "Dịch vụ sinh phản hồi", "Node.js + Langchain + Langgraph", "Phân tích và sinh phản hồi cho tin nhắn đến. Là một reAct agent phân tích intent và gọi tool phù hợp.")
+
+' Action Management Service
+Container(ActionSvc, "Dịch vụ nghiệp vụ",  "Node.js + Langchain", "Cung cấp các hành động nghiệp vụ như các tool để dịch vụ sinh phản hồi có thể gọi. Các công cụ bao gồm truy vấn RAG và Quản lý đơn hàng")
+
+Container(DBSvc, "Database Service", "MongoDB", "Cung cấp RESTful API để các dịch vụ khác có thể truy vấn và phục vụ cho quản lý CRUD các dữ liệu nội bộ")
+
+}
+
+' Database Service
+Rel(Frontend, DBSvc, "REST", "Gọi API để quản lý dữ liệu")
+BiRel(Frontend, HT, "WebSocket", "Gửi tin nhắn, nhận phản hồi")
+Rel_D(HT, KafkaBroker, "Producing", "LLM_Mes (tin nhắn mới)")
+Rel_U(KafkaBroker, HT, "Consuming", "Recommended_reply (phản hồi đề xuất)")
+Rel_L(PH, KafkaBroker, "Producing", "Recommended_reply (phản hồi đề xuất)")
+Rel_R(KafkaBroker, PH, "Consuming", "LLM_Mes (tin nhắn mới)")
+Rel_D(PH, ActionSvc, "REST", "Gọi tool để xử lý nghiệp vụ và lấy phản hồi")
+
+}
+' =====================================
+' Kết thúc định nghĩa Container
+' =====================================

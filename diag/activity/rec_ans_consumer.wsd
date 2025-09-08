@@ -1,0 +1,15 @@
+@startuml
+group "Websocket Service"
+    start
+    : Nhận phản hồi đề xuất;
+    switch (Chế độ hội thoại là?)
+        case ("auto")
+        :Lưu phản hồi vào cơ sở dữ liệu;
+        :Gửi phản hồi tới khách hàng;
+        case ("manual")
+
+
+    endswitch
+    :Gửi tới nhân viên phụ trách nếu có;
+    stop
+end group

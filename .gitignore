@@ -1,0 +1,10 @@
+# Node modules & envs in all services
+**/node_modules/
+**/.env
+
+# Secrets
+**/FirebaseKey.json
+
+# Runtime data
+**/uploads/
+**/Data/

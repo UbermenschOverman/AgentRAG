@@ -1,0 +1,21 @@
+!include <C4/C4_Container>
+
+!include ./actor.wsd
+
+Container_Boundary(ChatPlatform, "Nền tảng"){
+' !include ./frontend.wsd
+' !include ./backend.wsd
+
+Container(backend, "Server", "Node.js", "Cung cấp dịch vụ")
+Container(frontend, "Web application", "React, Next.js", "Cung cấp giao diện phù hợp với vai trò của người dùng")
+
+
+Rel(frontend,backend,"Gọi API quản trị", "HTTP REST")
+Rel(frontend,backend,"Kết nối thời gian thực", "WebSocket, HTTP REST")
+}
+System_Ext(LLM,"LLM Provider", "Nền tảng cung cấp mô hình ngôn ngữ lớn (LLM) để sinh phản hồi")
+Rel_R(customer, frontend, "Sử dụng nền tảng chat", "HTTP REST, WebSocket")
+Rel_D(agent, frontend, "Trả lời tin nhắn khách hàng", "HTTP REST, WebSocket")
+Rel_D(admin, frontend, "Quản lý hệ thống", "HTTP REST")
+Rel_R(backend, LLM, "Gọi mô hình sinh phản hồi", "HTTP REST")
+Rel_R(backend, LLM, "Gọi mô hình sinh phản hồi", "HTTP REST")    

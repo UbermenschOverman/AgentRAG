@@ -1,0 +1,14 @@
+@startuml
+group "RAG pipeline"
+start
+:Nhu cầu hỏi đáp;
+:Embedding câu hỏi;
+
+
+:Hybrid search;
+
+:Tạo câu trả lời;
+:Gửi câu trả lời cho khách hàng;
+
+stop
+@enduml

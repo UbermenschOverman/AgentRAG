@@ -1,0 +1,115 @@
+DB: CSKH
+collection: tenants
+sampledata:
+[
+  {
+    "_id": { "$oid": "680b6f003d3347866b48ad60" },
+    "tenantId": "SerenityHomestay",
+    "name": "Serenity Homestay",
+    "description": "Homestay yên bình phong cách Bắc Âu tại ngoại ô Đà Lạt.",
+    "address": "02 Đường Cam Ly, Phường 5, Đà Lạt",
+    "orderForm": {
+      "coreFields": "[{\"name\":\"name\",\"required\":\"true\"},{\"name\":\"phoneNumber\",\"required\":\"true\"}]",
+      "customFields": "[{\"name\":\"checkInDate\",\"required\":\"true\"},{\"name\":\"checkOutDate\",\"required\":\"true\"},{\"name\":\"numberOfGuests\",\"required\":\"true\"},{\"name\":\"note\",\"required\":\"false\"}]"
+    }
+  },
+  {
+    "_id": { "$oid": "680b6f003d3347866b48ad61" },
+    "tenantId": "AuroraGlamping",
+    "name": "Aurora Glamping",
+    "description": "Khu glamping cao cấp giữa rừng thông tại Lâm Đồng.",
+    "address": "Khu du lịch Đankia, Lạc Dương, Lâm Đồng",
+    "orderForm": {
+      "coreFields": "[{\"name\":\"name\",\"required\":\"true\"},{\"name\":\"phoneNumber\",\"required\":\"true\"}]",
+      "customFields": "[{\"name\":\"checkInDate\",\"required\":\"true\"},{\"name\":\"checkOutDate\",\"required\":\"true\"},{\"name\":\"numberOfGuests\",\"required\":\"true\"},{\"name\":\"note\",\"required\":\"false\"}]"
+    }
+  },
+  {
+    "_id": { "$oid": "680b6f003d3347866b48ad62" },
+    "tenantId": "SeabreezeHostel",
+    "name": "Seabreeze Hostel",
+    "description": "Hostel trẻ trung dành cho backpacker gần biển Nha Trang.",
+    "address": "15A Trần Phú, Nha Trang, Khánh Hòa",
+    "orderForm": {
+      "coreFields": "[{\"name\":\"name\",\"required\":\"true\"},{\"name\":\"phoneNumber\",\"required\":\"true\"}]",
+      "customFields": "[{\"name\":\"checkInDate\",\"required\":\"true\"},{\"name\":\"checkOutDate\",\"required\":\"true\"},{\"name\":\"numberOfGuests\",\"required\":\"true\"},{\"name\":\"note\",\"required\":\"false\"}]"
+    }
+  },
+  {
+    "_id": { "$oid": "680b6f003d3347866b48ad63" },
+    "tenantId": "LavenderHotel",
+    "name": "Lavender Boutique Hotel",
+    "description": "Khách sạn boutique phong cách Pháp tại trung tâm Đà Lạt.",
+    "address": "24 Nguyễn Văn Cừ, Phường 1, Đà Lạt",
+    "orderForm": {
+      "coreFields": "[{\"name\":\"name\",\"required\":\"true\"},{\"name\":\"phoneNumber\",\"required\":\"true\"}]",
+      "customFields": "[{\"name\":\"checkInDate\",\"required\":\"true\"},{\"name\":\"checkOutDate\",\"required\":\"true\"},{\"name\":\"numberOfGuests\",\"required\":\"true\"},{\"name\":\"note\",\"required\":\"false\"}]"
+    }
+  },
+  {
+    "_id": { "$oid": "680b6f003d3347866b48ad64" },
+    "tenantId": "BlueBayCamping",
+    "name": "Blue Bay Camping",
+    "description": "Khu cắm trại ven biển với tiện ích BBQ và hoạt động ngoài trời tại Vũng Tàu.",
+    "address": "Đường 3/2, Long Hải, Bà Rịa - Vũng Tàu",
+    "orderForm": {
+      "coreFields": "[{\"name\":\"name\",\"required\":\"true\"},{\"name\":\"phoneNumber\",\"required\":\"true\"}]",
+      "customFields": "[{\"name\":\"checkInDate\",\"required\":\"true\"},{\"name\":\"checkOutDate\",\"required\":\"true\"},{\"name\":\"numberOfGuests\",\"required\":\"true\"},{\"name\":\"note\",\"required\":\"false\"}]"
+    }
+  },
+  {
+    "_id": { "$oid": "680b6f003d3347866b48ad65" },
+    "tenantId": "HeritageRestaurant",
+    "name": "Heritage Restaurant",
+    "description": "Nhà hàng cao cấp chuyên ẩm thực Việt cổ truyền tại Hội An.",
+    "address": "01 Nguyễn Phúc Chu, Hội An, Quảng Nam",
+    "orderForm": {
+      "coreFields": "[{\"name\":\"name\",\"required\":\"true\"},{\"name\":\"phoneNumber\",\"required\":\"true\"}]",
+      "customFields": "[{\"name\":\"reservationDate\",\"required\":\"true\"},{\"name\":\"numberOfGuests\",\"required\":\"true\"},{\"name\":\"specialRequest\",\"required\":\"false\"}]"
+    }
+  },
+  {
+    "_id": { "$oid": "680b6f003d3347866b48ad66" },
+    "tenantId": "MapleCafe",
+    "name": "Maple Garden Cafe",
+    "description": "Quán cafe sân vườn phong cách Nhật tại Tam Đảo.",
+    "address": "Khu 2, Tam Đảo, Vĩnh Phúc",
+    "orderForm": {
+      "coreFields": "[{\"name\":\"name\",\"required\":\"true\"},{\"name\":\"phoneNumber\",\"required\":\"true\"}]",
+      "customFields": "[{\"name\":\"reservationDate\",\"required\":\"false\"},{\"name\":\"numberOfGuests\",\"required\":\"false\"},{\"name\":\"note\",\"required\":\"false\"}]"
+    }
+  },
+  {
+    "_id": { "$oid": "680b6f003d3347866b48ad67" },
+    "tenantId": "StarryNightCamp",
+    "name": "Starry Night Camp",
+    "description": "Khu camping ngắm sao và tổ chức lửa trại tại Măng Đen.",
+    "address": "Thị trấn Măng Đen, Kon Plông, Kon Tum",
+    "orderForm": {
+      "coreFields": "[{\"name\":\"name\",\"required\":\"true\"},{\"name\":\"phoneNumber\",\"required\":\"true\"}]",
+      "customFields": "[{\"name\":\"checkInDate\",\"required\":\"true\"},{\"name\":\"checkOutDate\",\"required\":\"true\"},{\"name\":\"numberOfGuests\",\"required\":\"true\"},{\"name\":\"note\",\"required\":\"false\"}]"
+    }
+  },
+  {
+    "_id": { "$oid": "680b6f003d3347866b48ad68" },
+    "tenantId": "CloudHillHotel",
+    "name": "Cloud Hill Boutique",
+    "description": "Khách sạn boutique nhỏ xinh ẩn mình trên đồi Sa Pa.",
+    "address": "Đồi Cốc San, Sa Pa, Lào Cai",
+    "orderForm": {
+      "coreFields": "[{\"name\":\"name\",\"required\":\"true\"},{\"name\":\"phoneNumber\",\"required\":\"true\"}]",
+      "customFields": "[{\"name\":\"checkInDate\",\"required\":\"true\"},{\"name\":\"checkOutDate\",\"required\":\"true\"},{\"name\":\"numberOfGuests\",\"required\":\"true\"},{\"name\":\"note\",\"required\":\"false\"}]"
+    }
+  },
+  {
+    "_id": { "$oid": "680b6f003d3347866b48ad69" },
+    "tenantId": "SunriseBeachCafe",
+    "name": "Sunrise Beach Cafe",
+    "description": "Quán cafe ven biển với view bình minh tại Quy Nhơn.",
+    "address": "01 Xuân Diệu, Quy Nhơn, Bình Định",
+    "orderForm": {
+      "coreFields": "[{\"name\":\"name\",\"required\":\"true\"},{\"name\":\"phoneNumber\",\"required\":\"true\"}]",
+      "customFields": "[{\"name\":\"reservationDate\",\"required\":\"false\"},{\"name\":\"note\",\"required\":\"false\"}]"
+    }
+  }
+]

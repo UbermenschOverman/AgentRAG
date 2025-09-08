@@ -1,0 +1,9 @@
+
+!include <C4/C4_Container>
+skinparam ActorFontSize 10
+Person(customer, "Khách hàng doanh nghiệp", "Người dùng gửi tin nhắn")
+Person(agent,    "Nhân viên doanh nghiệp", "Nhân viên chăm sóc khách hàng trả lời tin nhắn khách")
+Person(admin,    "Quản lý doanh nghiệp", "Quản lý hệ thống, cấu hình")
+
+' Nhúng định nghĩa các container từ file riêng
+  ' Các container đã định nghĩa trong CommonContainers.puml

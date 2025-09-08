@@ -1,0 +1,30 @@
+!include <C4/C4_Component>
+
+LAYOUT_WITH_LEGEND()
+
+    Container(frontend, "Web application", "React, Next.js", "Cung cấp giao diện phù hợp với vai trò của người dùng")
+    ContainerDb(db, "Cơ sở dữ liệu", "MongoDB", "Lưu trữ thông tin người dùng, tin nhắn, cấu hình hệ thống")
+    ContainerDb(weaviate, "Vector Database", "Weaviate", "Lưu trữ và truy vấn dữ liệu vector")
+
+Container_Boundary(server, "Internal Service"){
+    Component(File, "File Controller", "Node.js, Express", "Quản lý tài liệu nội bộ của doanh nghiệp")
+    Component(doc, "Document handler", "Node.js, weaviate", "Quản lý tài nguyên tài liệu")
+    Component(image, "Image handler", "Cloundinary, Node.js", "Quản lý tài nguyên hình ảnh")
+    Component(event, "Event handler", "Node.js", "Quản lý các sự kiện đang diễn ra như khuyến mãi, bảo trì, ...")
+    Component(config, "Config Controller", "Node.js", "Quản lý cấu hình hệ thống")
+    Component(profile, "Profile Handler", "Node.js", "Quản lý thông tin doanh nghiệp")
+    Component(export, "Export Handler", "Node.js", "Xuất dữ liệu hệ thống dưới dạng file CSV")
+}
+Rel_D(frontend, File, "Uses")
+Rel_D(frontend, config, "Uses")
+Rel_D(File, doc, "Contains")
+Rel_D(File, image, "Contains")
+Rel_D(File, export, "Contains")
+Rel_D(config, profile, "Contains")
+Rel_D(config, event, "Contains")
+
+Rel_D(doc, weaviate, "Nạp xóa dữ liệu vector", "Weaviate Client")
+Rel_D(image, db, "Lưu trữ link và mô tả hình ảnh", "MongoDB Client")
+Rel_D(event, db, "Lưu trữ thông tin sự kiện", "MongoDB Client")
+Rel_D(profile, db, "Lưu trữ thông tin doanh nghiệp", "MongoDB Client")
+Rel_D(export, db, "Truy xuất dữ liệu hệ thống", "MongoDB Client")

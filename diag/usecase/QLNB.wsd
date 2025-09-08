@@ -1,0 +1,15 @@
+@startuml
+
+actor QuanLy as QL
+
+rectangle "Quản lý nội bộ" {
+  usecase "Quản lý tài liệu nội bộ" as QLTL
+  usecase "Quản trị hồ sơ doanh nghiệp" as QTHS
+  usecase "Quản trị trạng thái vận hành" as QTTTVH
+}
+
+QL --> QLTL
+QL --> QTHS
+QL --> QTTTVH
+
+@enduml

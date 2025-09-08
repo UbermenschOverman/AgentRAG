@@ -1,0 +1,125 @@
+/**
+ * nhận conversation_ID, tenent_Id, và intent đã trích xuất.
+chechk cache xem với conversationID này có trong đã tồn tại incompleted order queue chưa
+nếu chưa, lấy thoogn tin về các trường cần phải điền của doanh nghiệp này từ db, 
+tạo đơn rỗng,
+gửi form đơn rỗng và intent lên LLM để LLM trả về populated form (follow up question nếu không thể trích xuất hoặc thiếu thông tin, được biểu hiện bằng 1 cờ nào đó)
+Xét cờ để :
+    - nếu đủ thì gửi xác nhận đơn.
+        -đẩy order vào completed queue
+    - nếu không đủ/ thiếu thì forward câu hỏi luôn.
+        - -đẩy populated order vào incompleted order queue
+ */
+
+
+-> kết nối cache redis, 
+lưu incompleted order queue, với 1 conversation ID 1 queue
+có dạng:
+key: incompleted_order_queue: conversation_ID
+value: const orderFormFields = [
+  { name: "fullName", required: true },            // Họ và tên người đặt
+  { name: "phoneNumber", required: true },         // Số điện thoại liên hệ
+  { name: "email", required: false },              // Email (tùy chọn)
+  { name: "checkInDate", required: true },         // Ngày nhận villa
+  { name: "checkOutDate", required: true },        // Ngày trả villa
+  { name: "villaId", required: true },             // Villa được chọn
+  { name: "numberOfGuests", required: true },      // Số khách
+  { name: "specialRequests", required: false },    // Yêu cầu đặc biệt
+  { name: "paymentMethod", required: true },       // Phương thức thanh toán
+  { name: "totalPrice", required: true },          // Tổng số tiền
+  { name: "depositAmount", required: false },      // Số tiền đặt cọc (nếu có)
+  { name: "orderStatus", required: false },        // Trạng thái đơn (server tự sinh)
+  { name: "createdAt", required: false },          // Thời gian tạo đơn (server tự sinh)
+  { name: "updatedAt", required: false }           // Thời gian cập nhật gần nhất
+];
+
+await redis.hset(`incompleted_order_queue: conversation_ID`, {
+  fullName: "Nguyễn Văn A",
+  phoneNumber: "0901234567",
+  email: "a.nguyen@example.com",
+  checkInDate: "2025-05-10",
+  checkOutDate: "2025-05-12",
+  villaId: "villa_01",
+  numberOfGuests: "4",
+  specialRequests: "Gần hồ bơi",
+  paymentMethod: "credit_card",
+  totalPrice: "5600000",
+  depositAmount: "1000000",
+  orderStatus: "pending",
+  createdAt: "2025-04-25T10:30:00Z",
+  updatedAt: "2025-04-25T10:30:00Z"
+});
+
+{
+  "tenantId": "VillaChunk",
+  "name": "Mikan Village",
+  "description": "Khu nghỉ dưỡng cuối tuần phong cách Nhật tại Yên Bái, Ba Vì, Hà Nội.",
+  "address": "12 Nguyễn Thái Học, Quận 1, TP.HCM",
+    "orderForm": {
+      "coreFields": [
+        {
+          "name": "name",
+          "required": "true"
+        },
+        {
+          "name": "phoneNumber",
+          "required": "true"
+        }
+      ],
+      "customFields": "checkInDate,checkOutDate,numberOfGuests"
+      '[{"name":"checkInDate","required":"true"},{"name":"checkOutDate","required":"true"},{"name":"numberOfGuests","required":"true"},{"name":"note","required":"false"}]'
+    }
+  }
+
+
+ok khi mà có tin nhắn mới được chuyển đến
+check conversationID để xem trong incompleted order queue redis đã có order chưa, nếu có order rồi thì trả về order này,
+nếu chưa có thì gọi lấy schema, tạo entry mới trong incompleted order queue với key incompleted_order_queue: conversation_ID và có schema giá trị rỗng
+
+ví dụ:
+Bạn là một trợ lý hỗ trợ khách hàng đáng tin cậy của doanh nghiệp Mikan Village-Khu nghỉ dưỡng cuối tuần phong cách Nhật tại Yên Bái, Ba Vì, Hà Nội. Bạn đang cố gắng lên đơn hỗ trợ khách hàng sử dụng dịch vụ. Bạn sẽ được biểu mẫu bên CSKH đang thu thập. Nhiệm vụ của bạn là từ input của khách hàng cố gắng điền vào các trường thông tin còn trống trong form.
+và thông báo lại những trường đang bị thiếu thông tin để bên chăm sóc khách hàng hỏi tiếp.
+
+Hãy trích xuất thông tin trong phần "Ngữ cảnh" để điền vào form bên dưới.
+
+sau khi điền hãy trả về những trường dữ liệu đang bị thiếu thông tin trong mảng remaining_feilds (nếu các trường thông tin đã đủ, remaining_feilds là mảng rỗng)
+
+**Form hiện tại:** 
+[
+  {
+    "name": "name",
+    "value":null,
+    "required": "true"
+  },
+  {
+    "name": "phoneNumber",
+    "value":null,
+    "required": "true"
+  },
+  {
+    "name": "checkInDate",
+    "value":null,
+    "required": "true"
+  },
+  {
+    "name": "checkOutDate",
+    "value":null,
+    "required": "true"
+  },
+  {
+    "name": "numberOfGuests",
+    "value":null,
+    "required": "true"
+  },
+  {
+    "name": "note",
+    "value":null,
+    "required": "false"
+  }
+]
+
+ **Tin nhắn**: "Tôi tên Nam muốn đặt phòng"
+
+**Trả lời:**
+  trả về dữ liệu dạng json {form,remaining_feilds}
+  trong đó trường form chứa Form đã cập nhật, remaining_feilds chứa mảng các trường vẫn thiếu thông tin

@@ -1,0 +1,52 @@
+@startuml
+
+participant "Kafka" as kafka
+
+participant "graph" as graph
+participant "Decompose node" as decompose
+participant "Customer Info node" as cust
+participant "reAct Agent node" as react
+participant "Tool store" as toolstore
+
+participant "LLM Provider" as llm
+participant "Action service" as action
+participant "MongoDB" as db
+
+kafka -> graph : "Consume LLM_Mes"
+activate graph
+graph -> db: "get data to build state"
+db --> graph : "data"
+graph -> graph : "build state"
+graph -> decompose : "decompose(LLM_Mes)"
+activate decompose
+decompose -> llm : "prompt(LLM_Mes, state)"
+llm --> decompose : "intents array"
+decompose -> graph : "intents array"
+deactivate decompose
+graph -> cust : "extract customer info"
+activate cust
+cust -> llm : "prompt(LLM_Mes, state)"
+llm --> cust : "customer info"
+cust -> graph : "customer info"
+deactivate cust
+graph -> react : "react(LLM_Mes, intents array, state)"
+activate react
+react -> llm : "prompt(LLM_Mes, intents array, state)"
+llm --> react : "tool call"
+loop "cho tới khi không còn tool call"
+react -> toolstore : "call tool"
+activate toolstore
+toolstore -> action : "execute tool"
+action --> toolstore : "tool results"
+toolstore --> react : "tool results"
+deactivate toolstore
+react -> llm : "prompt(LLM_Mes, tool results, state)"
+llm --> react : "tool call"
+end
+llm --> react : "final response"
+react -> graph : "final response"
+deactivate react
+graph ->kafka: "Produce Rec_ans"
+deactivate graph
+
+@enduml

@@ -1,0 +1,16 @@
+@startuml
+start
+: Nhận yêu cầu kết nối;
+if (clientId rỗng) then (đúng)
+    : Tạo khách hàng, hội thoại mới;
+else (sai)
+    if(clientId có trong redis) then (sai)
+        : Tạo hội thoại mới;
+    else (đúng)
+        : Lấy thông tin hội thoại từ redis;
+    endif
+endif
+: Gửi clientId, conversationId;
+stop
+@enduml
+

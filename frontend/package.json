@@ -1,0 +1,33 @@
+{
+  "name": "aichatbot",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@ant-design/nextjs-registry": "^1.0.2",
+    "autoprefixer": "^10.4.21",
+    "axios": "^1.9.0",
+    "firebase": "^11.9.1",
+    "linkify-react": "^4.3.1",
+    "linkifyjs": "^4.3.1",
+    "next": "15.3.2",
+    "postcss": "^8.5.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
+    "socket.io-client": "^4.8.1"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "eslint": "^9",
+    "eslint-config-next": "15.3.2",
+    "tailwindcss": "^4.1.7"
+  }
+}

@@ -1,0 +1,26 @@
+@startuml
+
+actor "Nhân viên" as NV
+actor "Khách hàng" as KH 
+
+rectangle "Nhắn tin thời gian thực" {
+  usecase "Chuyển chế độ hội thoại" as CCD
+  usecase "Khách nhắn" as KNT
+  usecase "Nhân viên nhắn khách" as NVNT
+  usecase "Bỏ chọn khách hàng" as BCKH
+  usecase "Chọn Khách hàng" as CHD
+  usecase "Xem hội thoại" as XHT
+  usecase "Xem/Giải quyết thông báo" as CTH
+}
+
+XHT -left.> CHD : <<include>>
+CCD -left.|> XHT : <<extend>>
+CTH -up.|> XHT : <<extend>> 
+NV --> NVNT
+NV --> BCKH
+NVNT -.> XHT : <<include>>
+
+KH --> KNT
+
+
+@enduml

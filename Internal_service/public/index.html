@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Tenant Lookup</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        margin: 2em;
+      }
+      input,
+      button {
+        padding: 8px;
+        font-size: 16px;
+      }
+      #result {
+        margin-top: 20px;
+        padding: 12px;
+        border: 1px solid #ccc;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Tìm kiếm thông tin doanh nghiệp theo Tenant ID</h2>
+    <input type="text" id="tenantIdInput" placeholder="Nhập tenantId..." />
+    <button onclick="lookupTenant()">Tra cứu</button>
+    <div id="result"></div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

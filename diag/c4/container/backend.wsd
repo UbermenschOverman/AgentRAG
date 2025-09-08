@@ -1,0 +1,36 @@
+@startuml
+!include <C4/C4_Container>
+
+' === Font & Layout tuning ===
+skinparam DefaultFontSize 18
+skinparam ComponentFontSize 20
+skinparam ArrowFontSize 14
+skinparam NoteFontSize 14
+skinparam Padding 2
+skinparam NodeMargin 2
+skinparam ComponentSpacing 5
+
+Container_Boundary(Backend,"Backend") {
+    Container(internal, "Internal Service", "Node.js, Express", "Quản trị nội bộ")
+    Container(ws, "WebSocket Service", "Node.js, Socket.IO, Redis", "Giao tiếp")
+    Container(action, "Action Service", "Node.js, Weaviate, Express", "Thực thi nghiệp vụ")
+    Container(ansgen, "LLM Service", "Node.js, LangChain, LangGraph, Redis", "Điều phối và sinh phản hồi")
+    ContainerQueue(kafka, "Message Broker", "Apache Kafka")
+    ContainerDb(db, "Cơ sở dữ liệu", "MongoDB")
+    ContainerDb(weaviate, "Vector Database", "Weaviate")
+
+    Rel_U(ansgen, db, "Lưu trữ\nvà truy xuất dữ liệu", "MongoDB Client")
+    Rel_R(ws, kafka, "Produce\nLLM_Mes", "Kafka producer")
+    Rel_L(kafka, ws, "Consume\nRec_Ans và Order", "Kafka consumer")
+    Rel_D(kafka, ansgen, "Consume\nLLM_Mes", "Kafka consumer")
+    Rel_U(ansgen, kafka, "Produce\nRec_Ans", "Kafka producer")
+    Rel_L(ansgen, action, "Gọi hành động\n tương ứng", "HTTP REST")
+    Rel_R(action, kafka, "Produce\nOrder", "Kafka producer")
+    Rel_L(internal, db, "Lưu trữ và truy xuất dữ liệu", "MongoDB Client")
+    Rel_U(action, db, "Lưu trữ\nvà truy xuất dữ liệu", "MongoDB Client")
+    Rel_R(ws, db, "Lưu trữ\nvà truy xuất dữ liệu", "MongoDB Client")
+    Rel_D(internal, weaviate, "Nạp/xóa dữ liệu vector", "Weaviate Client")
+    Rel_R(action, weaviate, "Truy vấn\ndữ liệu vector", "Weaviate Client")
+
+}
+@enduml

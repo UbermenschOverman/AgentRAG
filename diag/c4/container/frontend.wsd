@@ -1,0 +1,5 @@
+!include <C4/C4_Container>
+
+Container_Boundary(webapp, "Frontend") {
+    Container(frontend, "Web application", "React, Next.js", "Cung cấp giao diện phù hợp với vai trò của người dùng")
+}

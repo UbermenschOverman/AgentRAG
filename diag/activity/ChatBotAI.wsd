@@ -1,0 +1,27 @@
+@startuml
+group "Dịch vụ sinh phản hồi"
+start
+:Nhận tin nhắn;
+group "<<call>> Phân tích nội dung tin nhắn"
+: Phân tích và tạo mảng ý định;
+end group
+while (Thỏa mãn hết mảng ý định ?) is (chưa)
+switch (nhu cầu là?) 
+case (hỏi đáp)
+    group "<<call>> Hỏi đáp"
+    :Xử lý và cung cấp phản hồi;
+    end group
+case (sử dụng dịch vụ)
+    group "<<call>> Quản lý đơn"
+    :Xử lý và cung cấp phản hồi;
+    end group
+case (tán gẫu)
+  :Xử lý và cung cấp phản hồi;
+endswitch 
+endwhile (rồi)
+
+:Kết hợp kết quả và tạo phản hồi;
+:Gửi phản hồi tới dịch vụ Websocket;
+
+stop
+@enduml

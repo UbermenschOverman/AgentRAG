@@ -1,0 +1,18 @@
+@startuml
+group "Quản lý đơn"
+start
+
+:Nhu cầu sử dụng dịch vụ;
+
+split
+  :Xử lý nhu cầu tạo đơn mới;
+split again
+  :Xử lý nhu cầu cập nhật đơn hiện tại;
+split again
+  :Xử lý nhu cầu xem đơn;
+end split
+:Tạo phản hồi;
+:Cập nhật đơn vào hàng đợi để nhân viên xử lý;
+
+stop
+@enduml

@@ -1,0 +1,55 @@
+@startuml
+
+participant "CMS Frontend" as cms
+participant "Client Frontend" as fr
+participant "Controller" as ctrl
+participant "Conversation Handler" as hdl
+participant "Client Handler" as client
+participant "Redis" as redis
+participant "Mongo" as db
+participant "kafka" as kafka
+
+activate redis
+activate db
+activate kafka
+
+fr --> ctrl : "client_message()"
+activate ctrl
+ctrl -> hdl : "get_mode()"
+activate hdl
+hdl -> redis : "get_mode()"
+redis --> hdl : "mode"
+
+hdl --> ctrl : "mode"
+deactivate hdl
+alt "mode = auto"
+ctrl -> hdl : "handle_message()"
+activate hdl
+hdl -> redis : "add_message to conversation"
+hdl -> db : "add_message to conversation"
+hdl -> kafka : "produce LLM_Mes"
+deactivate hdl
+
+else "mode = manual"
+ctrl -> client : "is_claimed()"
+activate client
+client -> redis : "get_cms_socket_id()"
+redis --> client : "cms socket id"
+client --> ctrl :"cms socket id"
+deactivate client
+    alt "cms socket id = null"
+    ctrl -> redis: "add_message to waiting queue"
+    else "cms socket id != null"
+    ctrl -> hdl : "handle_message()"
+    activate hdl
+    hdl -> redis : "add_message to conversation"
+    hdl -> db : "add_message to conversation"
+    hdl -> kafka : "produce LLM_Mes"
+    deactivate hdl
+ctrl ->cms : "forward new message"
+deactivate ctrl
+    end
+end
+
+
+@enduml

@@ -1,0 +1,25 @@
+@startuml
+
+actor "Doanh nghiệp" as DN
+actor "Nhân viên" as NV
+actor "Quản lý" as QL
+actor "Khách hàng" as KH
+DN <|-down-  QL
+DN <|-down- NV
+
+rectangle "Hệ Thống" {
+  usecase "Quản lý nội bộ" as QLNB
+  usecase "Quản lý đơn" as QLDH
+  usecase "Nhắn tin" as NT
+}
+
+
+QL -down-> QLNB
+' NV -down-> GTN
+NV -down-> NT
+NV -down-> QLDH
+KH -up-> NT
+
+
+
+@enduml

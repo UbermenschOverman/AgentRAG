@@ -1,0 +1,17 @@
+@startuml
+
+actor "Nhân viên" as NV
+actor "Khách hàng" as KH
+rectangle "Quản lý đơn" {
+  usecase "Cập nhật thông tin đơn" as CNDDH
+  usecase "Cập nhật trạng thái đơn" as CTDDH
+  usecase "Xem đơn" as XNDH
+  usecase "Lên đơn" as LDDH
+}
+
+NV --> CNDDH
+NV --> XNDH
+NV --> CTDDH
+KH --> LDDH
+
+@enduml

@@ -1,0 +1,27 @@
+!include <C4/C4_Component>
+
+LAYOUT_WITH_LEGEND()
+    ContainerDb(db, "Cơ sở dữ liệu", "MongoDB", "Lưu trữ thông tin người dùng, tin nhắn, cấu hình hệ thống")
+    ContainerQueue(kafka, "Message Broker", "Apache Kafka", "Xử lý các sự kiện bất đồng bộ giữa các dịch vụ")
+    Container(frontend, "Web application", "React, Next.js", "Cung cấp giao diện phù hợp với vai trò của người dùng")
+Container_Boundary(server, "Websocket Service"){
+    Component(ws, "Websocket Controller", "Socket.IO, Express server", "xử lý sự kiện, kết nối thời gian thực")
+    Component(kafkacli, "Kafka Client", "Kafka producer/consumer", "xử lý sự kiện bất đồng bộ")
+    Component(client, "Client Handler","Socket.IO Handler", "Quản lý kết nối, các sự kiện phát sinh và dữ liệu của người dùng" )
+    Component(cms, "CMS Handler","Socket.IO Handler", "Quản lý kết nối, các sự kiện phát sinh và dữ liệu của nhân viên chăm sóc" )
+    Component(conversation,"Conversation Handler", "Socket.IO Handler", "dữ liệu của cuộc hội thoại" )
+    Component(redis, "Redis", "Redis Client", "Lưu trữ tạm thời dữ liệu người dùng, cuộc hội thoại, thông tin nhân viên chăm sóc")
+
+    Rel_D(ws, client, "Uses")
+    Rel_D(ws, cms, "Uses")
+    Rel_D(ws, conversation, "Uses")
+    Rel_D(client, redis, "Uses")
+    Rel_D(cms, redis, "Uses")
+    Rel_D(conversation, redis, "Uses")
+    Rel_L(ws, kafkacli, "Produce LLM_Mes")
+    Rel_R(kafkacli,ws , "Consume Rec_Ans")
+    Rel_R(kafkacli,ws , "Consume Order")
+}
+ BiRel_L(kafkacli,kafka, "Connect")
+BiRel_L(db,ws, "Connect")
+Rel_D(frontend, ws, "Uses")

@@ -1,0 +1,42 @@
+@startuml
+
+participant "Answer Generation Service" as ansgen
+
+participant "Reservation Controller" as rev
+participant "Reservation ReAct agent" as agent
+participant "Reservation tool" as tool
+
+participant "LLM Provider" as llm
+participant "Kafka" as kafka
+participant "MongoDB" as db
+
+ansgen -> rev : "Order request"
+activate rev
+rev -> agent : "Process order"
+activate agent
+agent -> db: "getRelevantOrder()"
+db --> agent: "RelevantOrder"
+agent -> llm: "prompt(Order request, RelevantOrder)"
+llm --> agent : "tool call"
+loop "cho tới khi không còn tool call"
+agent -> tool : "call tool"
+activate tool
+alt "create order"
+tool -> db : "create order"
+db --> tool : "order details"
+tool --> agent : "order details"
+else "update order"
+tool -> db : "update order"
+db --> tool : "order details"
+tool --> agent : "order details"
+end
+deactivate tool
+agent -> llm : "prompt(Order request, order details)"
+llm --> agent : "final response + order details"
+end
+agent -> rev : "final response + order details"
+deactivate agent
+rev -> ansgen : "Order response"
+rev -> kafka : "Produce Order"
+deactivate rev
+

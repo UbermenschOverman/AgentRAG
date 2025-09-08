@@ -1,0 +1,23 @@
+@startuml
+
+participant "Browser" as cli
+participant "Websocket Service" as ws
+participant "Quản lý phiên" as redis
+activate cli
+cli -> ws : connect(tenantId)
+activate ws
+alt "tenantId không hợp lệ"
+ws -> cli : error
+deactivate cli
+end
+ws -> cli ++ : ack(tenantId)
+cli -> ws : register(sessionId, tenantId)
+alt "sessionId đã tồn tại"
+ws -> cli: newSession: false, sessionId: oldsessionId
+else "sessionId chưa tồn tại"
+ws -> cli: newSession: true, sessionId: newsessionId
+end
+cli -> cli : localStorage.setItem("sessionId", sessionId)
+cli -> ws: setup(sessionId, tenantId)
+ws ->redis++ : handleConnection(sessionId, tenantId)
+ws ->cli: success: true, message: "Phiên đã được thiết lập"

@@ -1,0 +1,16 @@
+@startuml "enterprise"
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+LAYOUT_TOP_DOWN()
+LAYOUT_WITH_LEGEND()
+
+Person(DN, "Doanh nghiệp", "Đăng ký và sử dụng nền tảng chăm sóc khách hàng")
+Person(KH, "Khách hàng", "Sử dụng nền tảng để nhận hỗ trợ, tư vấn")
+System_Boundary(s1, "Nền tảng chăm sóc khách hàng") {
+    System(MainSystem, "Nền tảng chăm sóc khách hàng", "Hệ thống chính cung cấp dịch vụ chăm sóc khách hàng")
+}
+System_Ext(LLM,"LLM Provider", "Nền tảng cung cấp mô hình ngôn ngữ lớn (LLM) để sinh phản hồi")
+Rel(DN, MainSystem, "Đăng ký và sử dụng")
+Rel(KH, MainSystem, "Sử dụng để nhận hỗ trợ, tư vấn")
+Rel(MainSystem, LLM, "Gọi mô hình sinh phản hồi")
+@enduml

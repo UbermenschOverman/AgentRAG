@@ -1,0 +1,26 @@
+@startuml
+
+participant "Answer Generation Service" as ansgen
+
+participant "RAG Controller" as rag
+participant "RAG pipeline" as pipeline
+
+participant "Vector Store" as vector
+participant "LLM Provider" as llm
+
+
+ansgen -> rag : "Query request"
+activate rag
+rag -> pipeline : "Process query"
+activate pipeline
+pipeline -> llm: "embed query"
+llm --> pipeline : "query embedding"
+pipeline -> vector : "search(query embedding)"
+vector --> pipeline : "retrieved documents"
+pipeline -> llm : "responseGen(query, retrieved documents)"
+llm --> pipeline : "answer"
+pipeline -> rag : "answer"
+deactivate pipeline
+rag -> ansgen : "Answer response"
+deactivate rag
+

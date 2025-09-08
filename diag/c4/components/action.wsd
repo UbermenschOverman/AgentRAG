@@ -1,0 +1,39 @@
+!include <C4/C4_Component>
+
+LAYOUT_WITH_LEGEND()
+
+ ContainerQueue(kafka, "Message Broker", "Apache Kafka", "Xử lý các sự kiện bất đồng bộ giữa các dịch vụ")
+    Container(ansgen,"Answer Generation Service", "Node.js, LangChain, LangGraph, Redis", "Chịu trách nhiệm phân tích và sinh phản hồi và gọi hành động tương ứng cho tin nhắn khách hàng")
+    System_Ext(LLM,"LLM Provider", "Nền tảng cung cấp mô hình ngôn ngữ lớn (LLM) để sinh phản hồi")
+    ContainerDb(db, "Cơ sở dữ liệu", "MongoDB", "Lưu trữ thông tin người dùng, tin nhắn, cấu hình hệ thống")
+    ContainerDb(weaviate, "Vector Database", "Weaviate", "Lưu trữ và truy vấn dữ liệu vector")
+
+Container_Boundary(server, "Action Service"){
+    Component(RAG, "RAG Controller", "Node.js, Weaviate, Express", "Nhận các truy vấn RAG từ khách hàng")
+    Component(Reservation, "Reservation Controller", "Node.js, Express", "Nhận các yêu cầu lên đơn từ khách hàng")
+    Component(reservationAgent, "Reservation reAct agent","LangChain", "agent xử lý các yêu cầu lên đơn")
+    Component(pipeline, "RAG pipline", "LangChain", "pipeline xử lý các yêu cầu RAG")
+    Component(query, "Embedding query", "LangChain", "Chuyển đổi truy vấn thành embedding vector")
+    Component(retrieval,"Retrieval", "LangChain", "Truy xuất dữ liệu từ Weaviate")
+    Component(response,"Response Generator", "LangChain", "Sinh phản hồi từ dữ liệu truy xuất được")
+    Component(kafkacli, "Kafka Client", "Kafka producer/consumer", "Xử lý sự kiện bất đồng bộ")
+    Component(reservation, "Reservation Tool", "Node.js, LangChain", "Các tool để xử lý yêu cầu lên đơn")
+
+    Rel_D(RAG, pipeline, "Uses")
+    Rel_D(pipeline, query, "Contains")
+    Rel_D(pipeline, retrieval, "Contains")
+    Rel_D(pipeline, response, "Contains")
+    Rel_D(Reservation, reservationAgent, "Uses")
+    Rel_D(reservationAgent, reservation, "Uses")
+}
+Rel_D(ansgen, RAG, "Gọi truy vấn RAG", "HTTP REST")
+Rel_U(RAG, ansgen, "Trả phản hồi RAG", "HTTP REST")
+Rel_D(ansgen, Reservation, "Gọi hành động lên đơn", "HTTP REST")
+Rel_U(Reservation, ansgen, "Trả phản hồi lên đơn", "HTTP REST")
+Rel_D(retrieval, weaviate, "Truy vấn dữ liệu RAG", "Weaviate Client")
+Rel_D(query, LLM, "Lấy embedding vector", "HTTP REST")
+Rel_D(response, LLM, "Sinh phản hồi", "HTTP REST")
+Rel_D(kafkacli, kafka, "Connect")
+Rel_R(reservation, kafkacli, "Produce Order")
+Rel_L(reservation, db, "ghi thông tin đơn", "MongoDB Client")
+Rel_L(reservationAgent, db, "Truy xuất thông tin đơn", "MongoDB Client")

@@ -1,0 +1,42 @@
+@startuml 
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+' Package chính cho container "Dịch vụ hội thoại"
+package "Dịch vụ hội thoại (Context Service)" {
+  
+Component(cms,"CMS", "Redis", "Nơi thực thi nghiệp vụ cho các nhân viên đang kết nối")
+Component(client, "Client", "Redis", "Nơi thực thi các nghiệp vụ cho các người dùng đang kết nối.")
+Component(conversation, "Conversation", "Redis + MongoDB", "Quản lý các hội thoại đang diễn ra")
+Component(socket,"Socket.IO Server", "Socket.IO + Redis", "Xử lý các connection ws và phiên tương ứng. Route các sự kiện socket tới handler tương ứng, gửi tin nhắn đi")
+Component(consumer, "Kafka Consumer", "Kafka", "Nhận các sự kiện từ Kafka và chuyển tiếp chúng")
+Component(producer, "Kafka Producer", "Kafka", "Gửi các sự kiện tới Kafka để xử lý bất đồng bộ")
+
+Rel_D(socket, cms,"incoming connection", "socket event")
+Rel_U(cms, socket, "send message", "socket event")
+
+Rel_D(socket, client,"incoming connection", "socket event")
+Rel_U(client, socket, "send message", "socket event")
+
+Rel_L(consumer, cms, "send rec_answer", "Kafka event")
+Rel_Neighbor(consumer, client, "send rec_answer", "Kafka event")
+
+Rel_D(consumer, conversation, "add rec_answer", "message object")
+Rel_U(conversation, consumer, "conversation metadata")
+
+Rel_D(client, producer, "send message", "message object")
+
+Rel_D(cms, conversation,"add message", "message object")
+Rel_D(client, conversation, "add message", "message object")
+
+Rel(kafka, consumer, "consume", "Kafka event")
+Rel(kafka, producer, "produce", "Kafka event")
+
+Rel(socket, frontend, "send message", "WebSocket event")
+Rel(frontend, socket, "recieve message", "WebSocket event")
+}
+
+
+
+@enduml

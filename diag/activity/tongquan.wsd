@@ -1,0 +1,32 @@
+@startuml
+group "Websocket Service"
+start
+:Khách hàng gửi tin nhắn;
+switch (Chế độ hội thoại?) 
+        ' group "<<call>> Agent"
+        '  : Xử lý tin nhắn;
+        '  : Tạo phản hồi;
+        ' end group
+    case (manual)
+        if(Khách này có người phụ trách?) then (yes)
+            ' fork
+            ' : forward tin nhắn tới nhân viên phụ trách;
+            ' fork again
+            '     group "<<call>> Agent"
+            '     : Xử lý tin nhắn;
+            '     : Tạo phản hồi;
+            '     end group
+            ' : Gửi phản hồi đề xuất tới nhân viên con người;
+            ' end merge
+            ' : Nhân viên cung cấp phản hồi cuối;
+        else (no)
+            : Lưu vào hàng đợi tạm thời;
+            end
+        endif
+    case (auto)
+endswitch
+: gửi dịch vụ sinh phản hồi;
+: Lưu trữ tin nhắn vào cơ sở dữ liệu;
+: Gửi tin nhắn tới nhân viên phụ trách nếu có;
+stop
+@enduml
